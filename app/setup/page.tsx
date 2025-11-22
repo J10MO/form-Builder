@@ -34,15 +34,15 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50">
-      <div className="container mx-auto px-4 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/10 dark:from-primary/10 dark:via-background dark:to-accent/5">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-slate-900 mb-3">Database Setup</h1>
-            <p className="text-lg text-slate-600">Initialize your Neon database to start using the application</p>
+          <div className="mb-6 sm:mb-8 text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-2 sm:mb-3">Database Setup</h1>
+            <p className="text-base sm:text-lg text-slate-600 px-4">Initialize your Neon database to start using the application</p>
           </div>
 
-          <Card className="border-slate-200 shadow-xl mb-6">
+          <Card className="border-2 shadow-xl dark:shadow-2xl bg-card/50 backdrop-blur-sm mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5" />

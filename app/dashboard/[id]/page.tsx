@@ -321,7 +321,7 @@ async function getFormDashboardData(formId: string, userId: number) {
     string,
     { label: string; type: string; totalResponses: number; values: Record<string, number> }
   > = {}
- 
+
   fields.forEach((field: any) => {
     fieldStats[field.id] = {
       label: field.label,

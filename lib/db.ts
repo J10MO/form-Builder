@@ -256,7 +256,7 @@ export interface User {
 
 export interface FormField {
   id: string
-  type: "text" | "email" | "number" | "textarea" | "select" | "checkbox" | "radio"
+  type: "text" | "email" | "number" | "phone" | "textarea" | "select" | "checkbox" | "radio"
   label: string
   required: boolean
   options?: string[] // For select, radio

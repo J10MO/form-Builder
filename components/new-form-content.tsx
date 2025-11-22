@@ -515,6 +515,7 @@ const FIELD_TYPES = [
   { value: "text", label: "Text Input" },
   { value: "email", label: "Email" },
   { value: "number", label: "Number" },
+  { value: "phone", label: "Phone Number (07)" },
   { value: "textarea", label: "Text Area" },
   { value: "select", label: "Dropdown" },
   { value: "checkbox", label: "Checkbox" },
@@ -624,7 +625,7 @@ export function NewFormContent({ userId }: { userId: number }) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-blue-50 via-white to-slate-50 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-primary/5 via-background to-accent/10 dark:from-primary/10 dark:via-background dark:to-accent/5 py-8">
       <div className="mx-auto max-w-4xl px-4">
         <div className="mb-6">
           <Link href="/">
@@ -635,9 +636,9 @@ export function NewFormContent({ userId }: { userId: number }) {
           </Link>
         </div>
 
-        <Card className="border-2 border-slate-200 shadow-lg">
+        <Card className="border-2 shadow-xl dark:shadow-2xl bg-card/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-slate-900">Create New Form</CardTitle>
+            <CardTitle className="text-3xl font-bold">Create New Form</CardTitle>
             <CardDescription>Build your custom form by adding fields and configuring their properties</CardDescription>
           </CardHeader>
           <CardContent>
@@ -683,7 +684,7 @@ export function NewFormContent({ userId }: { userId: number }) {
 
                 <div className="space-y-4">
                   {fields.map((field) => (
-                    <Card key={field.id} className="border border-slate-200">
+                    <Card key={field.id} className="border-2 bg-card/50 backdrop-blur-sm">
                       <CardContent className="pt-6">
                         <div className="flex items-start gap-4">
                           <div className="flex-1 space-y-4">

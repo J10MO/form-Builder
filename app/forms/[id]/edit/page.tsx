@@ -302,6 +302,7 @@ const FIELD_TYPES = [
   { value: "text", label: "Text Input" },
   { value: "email", label: "Email" },
   { value: "number", label: "Number" },
+  { value: "phone", label: "Phone Number (07)" },
   { value: "textarea", label: "Text Area" },
   { value: "select", label: "Dropdown" },
   { value: "checkbox", label: "Checkbox" },
@@ -400,7 +401,7 @@ export default function EditFormPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/10 dark:from-primary/10 dark:via-background dark:to-accent/5 py-8">
       <div className="mx-auto max-w-4xl px-4">
         <div className="mb-6">
           <Link href={`/forms/${formId}/responses`}>
@@ -411,9 +412,9 @@ export default function EditFormPage() {
           </Link>
         </div>
 
-        <Card className="border-2 border-slate-200 shadow-lg">
+        <Card className="border-2 shadow-xl dark:shadow-2xl bg-card/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-slate-900">Edit Form</CardTitle>
+            <CardTitle className="text-3xl font-bold">Edit Form</CardTitle>
             <CardDescription>Update your form details and fields</CardDescription>
           </CardHeader>
           <CardContent>
@@ -461,7 +462,7 @@ export default function EditFormPage() {
 
                 <div className="space-y-4">
                   {fields.map((field, index) => (
-                    <Card key={field.id} className="border border-slate-200">
+                    <Card key={field.id} className="border-2 bg-card/50 backdrop-blur-sm">
                       <CardContent className="pt-6">
                         <div className="flex items-start gap-4">
                           <div className="flex-1 space-y-4">

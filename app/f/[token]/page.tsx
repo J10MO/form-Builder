@@ -363,6 +363,8 @@ export default function PublicFormPage() {
       fields.forEach((field) => {
         if (field.type === "checkbox") {
           initialData[field.id] = false
+        } else if (field.type === "phone") {
+          initialData[field.id] = "07"
         } else {
           initialData[field.id] = ""
         }
@@ -392,6 +394,15 @@ export default function PublicFormPage() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(formData[field.id])) {
           newErrors[field.id] = "Please enter a valid email address"
+        }
+      }
+
+      // Validate phone number format (must be exactly 11 digits starting with 07)
+      if (field.type === "phone" && formData[field.id]) {
+        const phoneValue = formData[field.id]
+        const phoneRegex = /^07\d{9}$/
+        if (!phoneRegex.test(phoneValue)) {
+          newErrors[field.id] = "Phone number must be 11 digits starting with 07"
         }
       }
     })
@@ -453,6 +464,60 @@ export default function PublicFormPage() {
               }}
               className={hasError ? "border-red-500" : ""}
             />
+            {hasError && (
+              <p className="text-sm text-red-500 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {errors[field.id]}
+              </p>
+            )}
+          </div>
+        )
+
+      case "phone":
+        const phoneValue = formData[field.id] || "07"
+        const displayValue = phoneValue.startsWith("07") ? phoneValue.slice(2) : phoneValue.replace(/^07/, "")
+        return (
+          <div key={field.id} className="space-y-2">
+            <Label htmlFor={field.id}>
+              {field.label}
+              {field.required && <span className="text-red-500 ml-1">*</span>}
+            </Label>
+            <div className="flex items-center">
+              <span className="px-3 py-2 border border-r-0 border-gray-300 rounded-l-md bg-gray-50 text-gray-700 font-medium select-none">
+                07
+              </span>
+              <Input
+                id={field.id}
+                type="tel"
+                maxLength={9}
+                value={displayValue}
+                onChange={(e) => {
+                  // Only allow digits
+                  const value = e.target.value.replace(/\D/g, "")
+                  // Limit to 9 digits (after 07)
+                  const limitedValue = value.slice(0, 9)
+                  // Store the full phone number with 07 prefix
+                  const fullPhone = "07" + limitedValue
+                  setFormData({ ...formData, [field.id]: fullPhone })
+                  if (errors[field.id]) {
+                    setErrors({ ...errors, [field.id]: "" })
+                  }
+                }}
+                onKeyDown={(e) => {
+                  // Prevent backspace/delete when cursor is at the start
+                  if ((e.key === "Backspace" || e.key === "Delete") && e.currentTarget.selectionStart === 0) {
+                    e.preventDefault()
+                  }
+                }}
+                onFocus={(e) => {
+                  // Prevent selecting the "07" prefix by focusing at the end
+                  e.target.setSelectionRange(e.target.value.length, e.target.value.length)
+                }}
+                placeholder="123456789"
+                className={`flex-1 rounded-l-none ${hasError ? "border-red-500" : ""}`}
+              />
+            </div>
+            <p className="text-xs text-gray-500">Enter 9 digits (total: 11 digits including 07)</p>
             {hasError && (
               <p className="text-sm text-red-500 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" />
@@ -609,9 +674,9 @@ export default function PublicFormPage() {
   const fields = (typeof form.fields === "string" ? JSON.parse(form.fields) : form.fields) as FormField[]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/10 dark:from-primary/10 dark:via-background dark:to-accent/5 py-12">
       <div className="mx-auto max-w-3xl px-4">
-        <Card className="border-2 border-blue-200 shadow-lg">
+        <Card className="border-2 shadow-xl dark:shadow-2xl bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-slate-900">{form.title}</CardTitle>
             {form.description && <CardDescription className="text-base">{form.description}</CardDescription>}

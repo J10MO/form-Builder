@@ -1,0 +1,729 @@
+openapi: 3.0.0
+info:
+  title: FormBuilder API
+  description: "API documentation for FormBuilder application - A form creation and management system. This API uses cookie-based authentication. To authenticate, use the POST /api/auth/login endpoint with your email and password. The server will set an auth_user_id cookie automatically. This cookie will be sent with all subsequent requests automatically. Protected endpoints require this cookie to be present. Note: The authentication cookie is httpOnly, so it cannot be set manually. You must use the login endpoint first. If you receive a 401 Unauthorized error, you need to login using the authentication form at the top of this page or the login endpoint."
+  version: 1.0.0
+  contact:
+    name: FormBuilder API Support
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://your-production-domain.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: Forms
+    description: Form management endpoints
+  - name: Responses
+    description: Form response endpoints
+  - name: Analytics
+    description: Analytics and statistics endpoints
+  - name: Database
+    description: Database management endpoints
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Creates a new user account and automatically logs them in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+                name:
+                  type: string
+                  example: John Doe
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      description: Authenticates a user and sets an authentication cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Logs out the current user by clearing the authentication cookie
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Returns the currently authenticated user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forms:
+    get:
+      tags:
+        - Forms
+      summary: Get all forms
+      description: >
+        Retrieves all forms for a specific user.
+        Authentication may be required depending on your implementation.
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user
+      responses:
+        '200':
+          description: List of forms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  forms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Form'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Forms
+      summary: Create a new form
+      description: "Creates a new form with the specified fields. Note: Authentication may be required depending on your implementation."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - title
+                - fields
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                title:
+                  type: string
+                  example: Customer Feedback Form
+                description:
+                  type: string
+                  example: Tell us about your experience
+                fields:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FormField'
+      responses:
+        '200':
+          description: Form created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  form:
+                    $ref: '#/components/schemas/Form'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forms/{id}:
+    get:
+      tags:
+        - Forms
+      summary: Get form by ID
+      description: Retrieves a specific form by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the form
+      responses:
+        '200':
+          description: Form details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  form:
+                    $ref: '#/components/schemas/Form'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - Forms
+      summary: Update form
+      description: Updates an existing form
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Updated Form Title
+                description:
+                  type: string
+                  example: Updated description
+                fields:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FormField'
+      responses:
+        '200':
+          description: Form updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  form:
+                    $ref: '#/components/schemas/Form'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Forms
+      summary: Delete form
+      description: Deletes a form by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the form
+      responses:
+        '200':
+          description: Form deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/forms/share/{token}:
+    get:
+      tags:
+        - Forms
+      summary: Get form by share token
+      description: Retrieves a form using its share token (public access)
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The share token of the form
+      responses:
+        '200':
+          description: Form details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  form:
+                    $ref: '#/components/schemas/Form'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/responses:
+    get:
+      tags:
+        - Responses
+      summary: Get all responses
+      description: Retrieves all responses for a specific form
+      parameters:
+        - name: formId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The ID of the form
+      responses:
+        '200':
+          description: List of responses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Responses
+      summary: Submit form response
+      description: Submits a response to a form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - formId
+                - data
+              properties:
+                formId:
+                  type: integer
+                  example: 1
+                data:
+                  type: object
+                  description: Form response data (key-value pairs matching form field IDs)
+                  example:
+                    field_1: "John Doe"
+                    field_2: "john@example.com"
+                    field_3: "Great service!"
+                    field_4: "Excellent"
+      responses:
+        '200':
+          description: Response submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/analytics:
+    get:
+      tags:
+        - Analytics
+      summary: Get user analytics
+      description: Returns comprehensive analytics for the authenticated user including form counts, response counts, and recent activity
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Analytics'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/init-db:
+    get:
+      tags:
+        - Database
+      summary: Initialize database
+      description: Initializes the database by creating all necessary tables and indexes
+      responses:
+        '200':
+          description: Database initialized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Database initialized successfully
+                  timestamp:
+                    type: string
+                    format: date-time
+                  tables:
+                    type: array
+                    items:
+                      type: string
+                  userCount:
+                    type: integer
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/test-db:
+    get:
+      tags:
+        - Database
+      summary: Test database connection
+      description: Tests the database connection and returns connection information
+      responses:
+        '200':
+          description: Database connection successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Database connection successful
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                  tables:
+                    type: array
+                    items:
+                      type: string
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth_user_id
+      description: Authentication cookie (auth_user_id) set after login. Use the login endpoint first to authenticate.
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          nullable: true
+          example: John Doe
+        is_admin:
+          type: boolean
+          example: false
+
+    Form:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Customer Feedback Form
+        description:
+          type: string
+          nullable: true
+          example: Tell us about your experience
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormField'
+        share_token:
+          type: string
+          example: abc123xyz
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    FormField:
+      type: object
+      properties:
+        id:
+          type: string
+          example: field_1
+        type:
+          type: string
+          enum: [text, email, textarea, radio, checkbox, select, number, date]
+          example: text
+        label:
+          type: string
+          example: Full Name
+        required:
+          type: boolean
+          example: true
+        options:
+          type: array
+          items:
+            type: string
+          description: Options for radio, checkbox, or select fields
+          example: ["Excellent", "Good", "Average", "Poor"]
+
+    Response:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        form_id:
+          type: integer
+          example: 1
+        data:
+          type: object
+          description: Form response data (key-value pairs)
+          example:
+            field_1: "John Doe"
+            field_2: "john@example.com"
+            field_3: "Great service!"
+            field_4: "Excellent"
+        submitted_at:
+          type: string
+          format: date-time
+
+    Analytics:
+      type: object
+      properties:
+        totalForms:
+          type: integer
+          example: 10
+        totalResponses:
+          type: integer
+          example: 45
+        formsWithResponses:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              title:
+                type: string
+              description:
+                type: string
+                nullable: true
+              fields:
+                type: array
+              share_token:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time
+              response_count:
+                type: integer
+        recentResponses:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              form_id:
+                type: integer
+              data:
+                type: object
+              submitted_at:
+                type: string
+                format: date-time
+              form_title:
+                type: string
+        dailyStats:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: "Jan 15"
+              count:
+                type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error message here
+        success:
+          type: boolean
+          example: false
+        details:
+          type: string
+          nullable: true
+
+  responses:
+    BadRequest:
+      description: Bad request - missing or invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized - Authentication required. Please login using POST /api/auth/login endpoint or use the authentication form at the top of the page.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
