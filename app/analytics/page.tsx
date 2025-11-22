@@ -247,6 +247,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { NavBar } from "@/components/nav-bar"
 import { BarChart3, FileText, MessageSquare, TrendingUp, Calendar, Activity } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -296,7 +297,9 @@ export default function AnalyticsPage() {
   const dailyResponseData = analytics.dailyStats || []
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/10 to-background">
+      <NavBar></NavBar>
       <div className="mx-auto max-w-7xl px-4 py-6 sm:py-12 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="mb-2 text-3xl sm:text-4xl font-bold text-foreground text-balance">Analytics Dashboard</h1>
@@ -552,6 +555,7 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+   
     </div>
   )
 }

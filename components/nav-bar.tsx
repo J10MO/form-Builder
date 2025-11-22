@@ -60,7 +60,7 @@ export function NavBar({ user: initialUser }: NavBarProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          {/* <div className="hidden md:flex items-center gap-1">
             {user && (
               <>
                 <Link href="/forms">
@@ -77,7 +77,7 @@ export function NavBar({ user: initialUser }: NavBarProps) {
                 </Link>
               </>
             )}
-          </div>
+          </div> */}
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
