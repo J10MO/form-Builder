@@ -9,8 +9,6 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local development server
-  - url: https://your-production-domain.com
-    description: Production server
 
 tags:
   - name: Authentication
@@ -726,4 +724,3 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-

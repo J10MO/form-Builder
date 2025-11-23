@@ -28,7 +28,6 @@ export function NavBar({ user: initialUser }: NavBarProps) {
 
   useEffect(() => {
     setMounted(true)
-    // Fetch current user on mount
     fetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => setUser(data.user))
@@ -49,7 +48,6 @@ export function NavBar({ user: initialUser }: NavBarProps) {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20 transition-transform group-hover:scale-105">
               <span className="text-lg font-bold text-primary-foreground">F</span>
@@ -59,27 +57,6 @@ export function NavBar({ user: initialUser }: NavBarProps) {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          {/* <div className="hidden md:flex items-center gap-1">
-            {user && (
-              <>
-                <Link href="/forms">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <FileText className="h-4 w-4" />
-                    Forms
-                  </Button>
-                </Link>
-                <Link href="/analytics">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <BarChart3 className="h-4 w-4" />
-                    Analytics
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div> */}
-
-          {/* Right Side Actions */}
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
             {mounted && (

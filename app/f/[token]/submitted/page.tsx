@@ -32,7 +32,7 @@ export default function SubmittedPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
             <CheckCircle2 className="h-8 w-8 text-emerald-600" />
           </div>
-          <CardTitle className="text-3xl font-bold text-slate-900">Response Submitted!</CardTitle>
+          <CardTitle className="text-3xl font-bold ">Response Submitted!</CardTitle>
           <CardDescription className="text-base">Thank you for completing {form?.title || "this form"}</CardDescription>
         </CardHeader>
         <CardContent className="text-center space-y-4">

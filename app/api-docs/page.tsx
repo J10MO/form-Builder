@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useRef, useState } from "react"
 
 declare global {
@@ -156,10 +158,7 @@ export default function ApiDocsPage() {
           url: "/swagger.yaml",
           validatorUrl: null,
           dom_id: "#swagger-ui",
-          presets: [
-            window.SwaggerUIBundle.presets.apis,
-            window.SwaggerUIBundle.presets.standalone,
-          ],
+          presets: [window.SwaggerUIBundle.presets.apis, window.SwaggerUIBundle.presets.standalone],
           layout: "BaseLayout",
           deepLinking: true,
           displayRequestDuration: true,
@@ -217,7 +216,8 @@ export default function ApiDocsPage() {
         <div className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">API Documentation</h1>
           <p className="text-sm sm:text-base text-muted-foreground mb-4">
-            Complete API documentation for FormBuilder. Explore all available endpoints, request/response schemas, and try out the API directly.
+            Complete API documentation for FormBuilder. Explore all available endpoints, request/response schemas, and
+            try out the API directly.
           </p>
 
           {/* Authentication Status Card */}
@@ -228,9 +228,7 @@ export default function ApiDocsPage() {
                   <p className="text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 truncate">
                     ✓ Authenticated as {user?.email || user?.name || "User"}
                   </p>
-                  {user?.name && (
-                    <p className="text-xs text-muted-foreground mt-1 truncate">{user.name}</p>
-                  )}
+                  {user?.name && <p className="text-xs text-muted-foreground mt-1 truncate">{user.name}</p>}
                 </div>
                 <button
                   onClick={handleLogout}
@@ -268,11 +266,10 @@ export default function ApiDocsPage() {
                       {loginLoading ? "Logging in..." : "Login"}
                     </button>
                   </div>
-                  {loginError && (
-                    <p className="text-xs sm:text-sm text-destructive">{loginError}</p>
-                  )}
+                  {loginError && <p className="text-xs sm:text-sm text-destructive">{loginError}</p>}
                   <p className="text-xs text-muted-foreground">
-                    Don't have an account? Use the <strong>POST /api/auth/register</strong> endpoint below to create one.
+                    Don't have an account? Use the <strong>POST /api/auth/register</strong> endpoint below to create
+                    one.
                   </p>
                 </form>
               </div>
@@ -284,4 +281,3 @@ export default function ApiDocsPage() {
     </div>
   )
 }
-

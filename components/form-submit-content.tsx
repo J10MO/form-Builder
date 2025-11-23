@@ -203,7 +203,7 @@ export function FormSubmitContent({ form, user }: FormSubmitContentProps) {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-8 h-8 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Form Submitted!</h2>
+            <h2 className="text-2xl font-bold  mb-2">Form Submitted!</h2>
             <p className="text-slate-600 mb-4">Thank you for your response.</p>
             <p className="text-sm text-slate-500">Redirecting to home page...</p>
           </CardContent>
@@ -219,7 +219,7 @@ export function FormSubmitContent({ form, user }: FormSubmitContentProps) {
           <CardHeader className="space-y-2">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <CardTitle className="text-2xl font-bold text-slate-900">{form.title}</CardTitle>
+                <CardTitle className="text-2xl font-bold ">{form.title}</CardTitle>
                 {form.description && <CardDescription className="mt-2 text-base">{form.description}</CardDescription>}
               </div>
               {form.is_private && (

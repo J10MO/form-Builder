@@ -90,7 +90,7 @@ export default function RegisterPage() {
             <UserPlus className="h-7 w-7 text-white" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold text-slate-900">Create Account</CardTitle>
+            <CardTitle className="text-2xl font-bold ">Create Account</CardTitle>
             <CardDescription className="mt-2">Sign up to start building dynamic forms</CardDescription>
           </div>
         </CardHeader>

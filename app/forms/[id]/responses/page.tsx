@@ -1,382 +1,129 @@
-// "use client"
-
-// import { useEffect, useState } from "react"
-// import { useParams } from "next/navigation"
-// import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-// import { Badge } from "@/components/ui/badge"
-// import { ArrowLeft, ExternalLink, Copy, Check, FileText } from "lucide-react"
-// import Link from "next/link"
-// import { formatDistanceToNow } from "date-fns"
-// import type { FormField } from "@/lib/db"
-
-// export default function FormResponsesPage() {
-//   const params = useParams()
-//   const formId = params.id as string
-
-//   const [form, setForm] = useState<any>(null)
-//   const [responses, setResponses] = useState<any[]>([])
-//   const [isLoading, setIsLoading] = useState(true)
-//   const [copied, setCopied] = useState(false)
-
-//   useEffect(() => {
-//     fetchData()
-//   }, [formId])
-
-//   const fetchData = async () => {
-//     try {
-//       const [formRes, responsesRes] = await Promise.all([
-//         fetch(`/api/forms/${formId}`),
-//         fetch(`/api/responses?formId=${formId}`),
-//       ])
-
-//       const formData = await formRes.json()
-//       const responsesData = await responsesRes.json()
-
-//       setForm(formData.form)
-//       setResponses(responsesData.responses)
-//     } catch (error) {
-//       console.error("[v0] Error fetching data:", error)
-//     } finally {
-//       setIsLoading(false)
-//     }
-//   }
-
-//   const copyShareLink = () => {
-//     const shareUrl = `${window.location.origin}/f/${form.share_token}`
-//     navigator.clipboard.writeText(shareUrl)
-//     setCopied(true)
-//     setTimeout(() => setCopied(false), 2000)
-//   }
-
-//   if (isLoading) {
-//     return (
-//       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-//         <p className="text-slate-600">Loading responses...</p>
-//       </div>
-//     )
-//   }
-
-//   if (!form) {
-//     return (
-//       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-//         <Card className="max-w-md">
-//           <CardHeader>
-//             <CardTitle>Form Not Found</CardTitle>
-//             <CardDescription>The form you're looking for doesn't exist.</CardDescription>
-//           </CardHeader>
-//         </Card>
-//       </div>
-//     )
-//   }
-
-//   const fields = JSON.parse(form.fields) as FormField[]
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8">
-//       <div className="mx-auto max-w-7xl px-4">
-//         <div className="mb-6">
-//           <Link href="/forms">
-//             <Button variant="ghost" size="sm">
-//               <ArrowLeft className="mr-2 h-4 w-4" />
-//               Back to My Forms
-//             </Button>
-//           </Link>
-//         </div>
-
-//         <div className="mb-8 space-y-4">
-//           <div>
-//             <h1 className="text-4xl font-bold text-slate-900">{form.title}</h1>
-//             {form.description && <p className="mt-2 text-slate-600">{form.description}</p>}
-//           </div>
-
-//           <div className="flex flex-wrap gap-3">
-//             <Badge variant="secondary" className="text-base py-1 px-3">
-//               {responses.length} {responses.length === 1 ? "Response" : "Responses"}
-//             </Badge>
-//             <Badge variant="secondary" className="text-base py-1 px-3">
-//               {fields.length} {fields.length === 1 ? "Field" : "Fields"}
-//             </Badge>
-//           </div>
-
-//           <div className="flex gap-3">
-//             <Link href={`/f/${form.share_token}`} target="_blank">
-//               <Button variant="outline">
-//                 <ExternalLink className="mr-2 h-4 w-4" />
-//                 View Form
-//               </Button>
-//             </Link>
-//             <Button variant="outline" onClick={copyShareLink}>
-//               {copied ? (
-//                 <>
-//                   <Check className="mr-2 h-4 w-4 text-emerald-600" />
-//                   Copied!
-//                 </>
-//               ) : (
-//                 <>
-//                   <Copy className="mr-2 h-4 w-4" />
-//                   Copy Share Link
-//                 </>
-//               )}
-//             </Button>
-//             <Link href={`/forms/${formId}/edit`}>
-//               <Button variant="outline">Edit Form</Button>
-//             </Link>
-//           </div>
-//         </div>
-
-//         {responses.length === 0 ? (
-//           <Card className="border-2 border-dashed border-slate-300">
-//             <CardContent className="py-12 text-center">
-//               <FileText className="mx-auto mb-4 h-12 w-12 text-slate-400" />
-//               <h3 className="mb-2 text-xl font-semibold text-slate-900">No responses yet</h3>
-//               <p className="mb-6 text-slate-500">Share your form to start collecting responses</p>
-//               <Button onClick={copyShareLink}>
-//                 <Copy className="mr-2 h-4 w-4" />
-//                 Copy Share Link
-//               </Button>
-//             </CardContent>
-//           </Card>
-//         ) : (
-//           <Card className="border border-slate-200 shadow-lg">
-//             <CardHeader>
-//               <CardTitle>All Responses</CardTitle>
-//               <CardDescription>View and analyze all submitted responses</CardDescription>
-//             </CardHeader>
-//             <CardContent>
-//               <div className="overflow-x-auto">
-//                 <Table>
-//                   <TableHeader>
-//                     <TableRow>
-//                       <TableHead className="w-24">ID</TableHead>
-//                       {fields.map((field) => (
-//                         <TableHead key={field.id}>{field.label}</TableHead>
-//                       ))}
-//                       <TableHead className="w-40">Submitted</TableHead>
-//                     </TableRow>
-//                   </TableHeader>
-//                   <TableBody>
-//                     {responses.map((response) => {
-//                       const responseData = JSON.parse(response.data)
-
-//                       return (
-//                         <TableRow key={response.id}>
-//                           <TableCell className="font-medium">#{response.id}</TableCell>
-//                           {fields.map((field) => (
-//                             <TableCell key={field.id}>
-//                               {field.type === "checkbox"
-//                                 ? responseData[field.id]
-//                                   ? "Yes"
-//                                   : "No"
-//                                 : responseData[field.id] || "-"}
-//                             </TableCell>
-//                           ))}
-//                           <TableCell className="text-sm text-slate-500">
-//                             {formatDistanceToNow(new Date(response.submitted_at), { addSuffix: true })}
-//                           </TableCell>
-//                         </TableRow>
-//                       )
-//                     })}
-//                   </TableBody>
-//                 </Table>
-//               </div>
-//             </CardContent>
-//           </Card>
-//         )}
-//       </div>
-//     </div>
-//   )
-// }
-
-
-
 "use client"
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ExternalLink, Copy, Check, FileText } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Check, Copy, ExternalLink, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { formatDistanceToNow } from "date-fns"
-import type { FormField } from "@/lib/db"
+import { QRCodeCanvas } from "qrcode.react"   // ← إضافة المكتبة
 
-export default function FormResponsesPage() {
+export default function FormSuccessPage() {
   const params = useParams()
   const formId = params.id as string
-
-  const [form, setForm] = useState<any>(null)
-  const [responses, setResponses] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [shareUrl, setShareUrl] = useState("")
   const [copied, setCopied] = useState(false)
+  const [form, setForm] = useState<any>(null)
 
   useEffect(() => {
-    fetchData()
+    const fetchForm = async () => {
+      try {
+        const response = await fetch(`/api/forms/${formId}`)
+        const data = await response.json()
+        setForm(data.form)
+
+        const url = `${window.location.origin}/f/${data.form.share_token}`
+        setShareUrl(url)
+      } catch (error) {
+        console.error("[v0] Error fetching form:", error)
+      }
+    }
+
+    fetchForm()
   }, [formId])
 
-  const fetchData = async () => {
-    try {
-      const [formRes, responsesRes] = await Promise.all([
-        fetch(`/api/forms/${formId}`),
-        fetch(`/api/responses?formId=${formId}`),
-      ])
-
-      const formData = await formRes.json()
-      const responsesData = await responsesRes.json()
-
-      setForm(formData.form)
-      setResponses(responsesData.responses)
-    } catch (error) {
-      console.error("[v0] Error fetching data:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const copyShareLink = () => {
-    const shareUrl = `${window.location.origin}/f/${form.share_token}`
+  const copyToClipboard = () => {
     navigator.clipboard.writeText(shareUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <p className="text-slate-600">Loading responses...</p>
-      </div>
-    )
+  // حفظ الباركود كصورة
+  const downloadQRCode = () => {
+    const canvas = document.getElementById("qr-gen") as HTMLCanvasElement
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream")
+    const downloadLink = document.createElement("a")
+    downloadLink.href = pngUrl
+    downloadLink.download = `form-${formId}-qr.png`
+    downloadLink.click()
   }
-
-  if (!form) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Form Not Found</CardTitle>
-            <CardDescription>The form you're looking for doesn't exist.</CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    )
-  }
-
-  const fields = (typeof form.fields === "string" ? JSON.parse(form.fields) : form.fields) as FormField[]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="mb-6">
-          <Link href="/forms">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to My Forms
-            </Button>
-          </Link>
-        </div>
+    <div className=" from-emerald-50 to-slate-100 py-24">
+      <div className="mx-auto max-w-2xl px-4">
+        <Card className="border-2 border-emerald-200 shadow-lg">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+              <Check className="h-8 w-8 text-emerald-600" />
+            </div>
+            <CardTitle className="text-3xl font-bold">Form Created Successfully!</CardTitle>
+            <CardDescription className="text-base">
+              Your form "{form?.title}" is now live and ready to collect responses
+            </CardDescription>
+          </CardHeader>
 
-        <div className="mb-8 space-y-4">
-          <div>
-            <h1 className="text-4xl font-bold text-slate-900">{form.title}</h1>
-            {form.description && <p className="mt-2 text-slate-600">{form.description}</p>}
-          </div>
+          <CardContent className="space-y-8">
 
-          <div className="flex flex-wrap gap-3">
-            <Badge variant="secondary" className="text-base py-1 px-3">
-              {responses.length} {responses.length === 1 ? "Response" : "Responses"}
-            </Badge>
-            <Badge variant="secondary" className="text-base py-1 px-3">
-              {fields.length} {fields.length === 1 ? "Field" : "Fields"}
-            </Badge>
-          </div>
-
-          <div className="flex gap-3">
-            <Link href={`/f/${form.share_token}`} target="_blank">
-              <Button variant="outline">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                View Form
-              </Button>
-            </Link>
-            <Button variant="outline" onClick={copyShareLink}>
-              {copied ? (
-                <>
-                  <Check className="mr-2 h-4 w-4 text-emerald-600" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="mr-2 h-4 w-4" />
-                  Copy Share Link
-                </>
-              )}
-            </Button>
-            <Link href={`/forms/${formId}/edit`}>
-              <Button variant="outline">Edit Form</Button>
-            </Link>
-          </div>
-        </div>
-
-        {responses.length === 0 ? (
-          <Card className="border-2 border-dashed border-slate-300">
-            <CardContent className="py-12 text-center">
-              <FileText className="mx-auto mb-4 h-12 w-12 text-slate-400" />
-              <h3 className="mb-2 text-xl font-semibold text-slate-900">No responses yet</h3>
-              <p className="mb-6 text-slate-500">Share your form to start collecting responses</p>
-              <Button onClick={copyShareLink}>
-                <Copy className="mr-2 h-4 w-4" />
-                Copy Share Link
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="border border-slate-200 shadow-lg">
-            <CardHeader>
-              <CardTitle>All Responses</CardTitle>
-              <CardDescription>View and analyze all submitted responses</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-24">ID</TableHead>
-                      {fields.map((field) => (
-                        <TableHead key={field.id}>{field.label}</TableHead>
-                      ))}
-                      <TableHead className="w-40">Submitted</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {responses.map((response) => {
-                      const responseData = typeof response.data === "string" ? JSON.parse(response.data) : response.data
-
-                      return (
-                        <TableRow key={response.id}>
-                          <TableCell className="font-medium">#{response.id}</TableCell>
-                          {fields.map((field) => (
-                            <TableCell key={field.id}>
-                              {field.type === "checkbox"
-                                ? responseData[field.id]
-                                  ? "Yes"
-                                  : "No"
-                                : responseData[field.id] || "-"}
-                            </TableCell>
-                          ))}
-                          <TableCell className="text-sm text-slate-500">
-                            {formatDistanceToNow(new Date(response.submitted_at), { addSuffix: true })}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
+            {/* SHARE LINK */}
+            <div className="space-y-2">
+              <Label htmlFor="share-url">Share Link</Label>
+              <div className="flex gap-2">
+                <Input id="share-url" value={shareUrl} readOnly className="font-mono text-sm" />
+                <Button onClick={copyToClipboard} variant="outline" size="icon" className="shrink-0 bg-transparent">
+                  {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        )}
+              <p className="text-sm text-slate-500">Share this link with others</p>
+            </div>
+
+            {/* QR CODE SECTION */}
+            <div className="text-center space-y-4">
+              <p className="font-semibold text-slate-700">Scan QR Code to open the form</p>
+
+              <div className="flex justify-center">
+                <div className="bg-white p-4 rounded-xl shadow-md border">
+                  <QRCodeCanvas
+                    id="qr-gen"
+                    value={shareUrl}
+                    size={180}
+                    level="H"
+                    includeMargin={true}
+                  />
+                </div>
+              </div>
+
+              <Button variant="outline" onClick={downloadQRCode}>
+                Download QR Code
+              </Button>
+            </div>
+
+            {/* ACTION BUTTONS */}
+            <div className="flex flex-col gap-3">
+              <Link href={`/f/${form?.share_token}`} target="_blank">
+                <Button className="w-full bg-transparent" variant="outline">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Preview Form
+                </Button>
+              </Link>
+
+              <Link href={`/forms/${formId}/responses`}>
+                <Button className="w-full">View Responses</Button>
+              </Link>
+
+              <Link href="/forms">
+                <Button className="w-full" variant="ghost">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to My Forms
+                </Button>
+              </Link>
+            </div>
+
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

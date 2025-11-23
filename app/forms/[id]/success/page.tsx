@@ -40,14 +40,14 @@ export default function FormSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-slate-100 py-12">
+    <div className="  from-emerald-50 to-slate-100 py-24">
       <div className="mx-auto max-w-2xl px-4">
         <Card className="border-2 border-emerald-200 shadow-lg">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
               <Check className="h-8 w-8 text-emerald-600" />
             </div>
-            <CardTitle className="text-3xl font-bold text-slate-900">Form Created Successfully!</CardTitle>
+            <CardTitle className="text-3xl font-bold">Form Created Successfully!</CardTitle>
             <CardDescription className="text-base">
               Your form "{form?.title}" is now live and ready to collect responses
             </CardDescription>
