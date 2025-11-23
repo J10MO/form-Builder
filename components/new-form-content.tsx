@@ -1280,7 +1280,7 @@ export function NewFormContent({ userId }: { userId: number }) {
     setIsSubmitting(true)
 
     try {
-      console.log("[v0] Submitting form with data:", {
+      console.log(" Submitting form with data:", {
         userId,
         title,
         description,

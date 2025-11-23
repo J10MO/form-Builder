@@ -1056,102 +1056,44 @@ export default function PublicFormPage() {
 
   const fields = (typeof form.fields === "string" ? JSON.parse(form.fields) : form.fields) as FormField[]
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100">
-      {/* Professional Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/60 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{form.title}</h1>
-                {form.description && (
-                  <p className="text-gray-600 mt-1.5 text-sm leading-relaxed">{form.description}</p>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full">
-                <Shield className="h-4 w-4 text-green-600" />
-                <span className="font-medium">Secure Form</span>
-              </div>
-            </div>
-          </div>
-        </div>
+return (
+  <div className="min-h-screen bg-[#f1f3f4] py-10 px-4 flex justify-center">
+    <div className="w-full max-w-2xl">
+
+      {/* Title Section */}
+      <div className="bg-white p-8 shadow-md rounded-xl border-t-[10px] border-[#673ab7]">
+        <h1 className="text-3xl font-semibold text-[#202124]">{form.title}</h1>
+
+        {form.description && (
+          <p className="text-base text-[#5f6368] mt-3 leading-relaxed">
+            {form.description}
+          </p>
+        )}
       </div>
 
-      {/* Form Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="space-y-6">
-          {/* Security Banner */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Lock className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 text-sm">Secure Form Submission</h3>
-              <p className="text-gray-600 text-sm mt-0.5">
-                Your responses are encrypted and securely stored. We respect your privacy and data security.
-              </p>
-            </div>
-          </div>
+      {/* Actual Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="mt-6 bg-white rounded-xl shadow-md p-8 flex flex-col gap-6"
+      >
+        {fields.map((field, index) => renderField(field, index))}
 
-          {/* Form Fields */}
-          {fields.map((field, index) => renderField(field, index))}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-[#673ab7] hover:bg-[#5a32a0] text-white rounded-full w-fit px-10 h-11 mt-4 ml-auto font-medium"
+        >
+          {isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
+      </form>
 
-          {/* Submit Section */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 text-sm text-gray-500">
-                <Users className="h-4 w-4" />
-                <span>Your response will be recorded securely</span>
-              </div>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="h-12 px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2"></div>
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="mr-2 h-5 w-5" />
-                    Submit Response
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Professional Footer */}
-      <div className="border-t border-gray-200/60 bg-white/50 backdrop-blur-sm mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-6 text-gray-500">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-gray-600" />
-                </div>
-                <span className="font-medium">Professional Forms</span>
-              </div>
-              <div className="h-4 w-px bg-gray-300"></div>
-              <span>Enterprise-grade form solution</span>
-            </div>
-            <div className="text-gray-400">
-              © {new Date().getFullYear()} All rights reserved
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Footer */}
+      <p className="text-center text-sm text-[#5f6368] mt-6">
+        Never submit passwords through forms.
+      </p>
     </div>
-  )
+  </div>
+)
+
+
 }
