@@ -147,7 +147,7 @@ export default async function HomePage() {
         <div className="min-h-[calc(100vh-4rem)] bg-background">
           {/* Hero Section */}
           <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-b from-primary/5 via-background to-background">
-            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+            <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none " />
             <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-32 lg:px-8">
               <div className="mx-auto max-w-3xl text-center space-y-8">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary border border-primary/20">
@@ -170,6 +170,7 @@ export default async function HomePage() {
                       Get Started Free
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
+                    
                   </Link>
                   <Link href="/login">
                     <Button size="lg" variant="outline" className="h-12 px-8 text-base font-medium bg-transparent">
