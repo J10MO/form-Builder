@@ -41,8 +41,8 @@ export default function PublicFormPage() {
       if (data.form.is_private === true) {
         const userRes = await fetch("/api/auth/me", { cache: "no-store" })
         const userData = await userRes.json()
-        if (!userData) {
-          // 3) Redirect to login WITH RETURN URL
+        console.log(userData)
+        if (!userData || !userData.user) {
           router.push(`/login?next=/f/${token}`)
           return
         }
